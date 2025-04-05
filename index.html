@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Кондиционеры</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="lang-switch">
+    <img src="reshot-icon-globe-MR7PJ4CQAH.svg" id="langToggle" alt="Change Language">
+
+    <div id="langMenu" class="hidden">
+      <div class="lang-option" data-lang="ru">🇷🇺 Русский</div>
+      <div class="lang-option" data-lang="uz">🇺🇿 O‘zbek</div>
+      <div class="lang-option" data-lang="en">🇬🇧 English</div>
+    </div>
+
+  </div>
+
+  <div class="container">
+    <h1 class="title">
+      <span data-i18n="title">Кондиционеры от</span> <span class="midea">Midea</span>|Welkin<span class="dot"></span>
+    </h1>
+
+    <form id="orderForm">
+      <div id="conditionerContainer">
+        <div class="cond-row">
+          <select name="type" class="type-select">
+            <option data-i18n-option="wall">Настенный</option>
+            <option data-i18n-option="cassette">Кассетный</option>
+            <option data-i18n-option="duct">Канальный</option>
+            <option data-i18n-option="column">Калонный</option>
+            <option data-i18n-option="multi">Мульти сплит</option>
+            <option data-i18n-option="industrial">Промышленный</option>
+            <option data-i18n-option="other">Другое</option>
+          </select>
+          <input type="number" name="quantity" min="1" value="1" />
+          <button type="button" class="removeBtn hidden">&times;</button>
+        </div>
+      </div>
+
+      <button type="button" id="addBtn" data-i18n="add">Добавить кондиционер</button>
+
+      <label data-i18n="phoneLabel">Телефон:</label>
+      <input id="phone" type="tel" placeholder="+998 xx xxx xx xx" required />
+
+      <label data-i18n="cityLabel">Город:</label>
+      <!-- Города -->
+      <select id="city">
+        <option data-i18n-option="tashkent">Ташкент</option>
+        <option data-i18n-option="samarkand">Самарканд</option>
+        <option data-i18n-option="bukhara">Бухара</option>
+        <option data-i18n-option="namangan">Наманган</option>
+        <option data-i18n-option="andijan">Андижан</option>
+        <option data-i18n-option="fergana">Фергана</option>
+        <option data-i18n-option="karshi">Карши</option>
+        <option data-i18n-option="nukus">Нукус</option>
+        <option data-i18n-option="navoi">Навои</option>
+        <option data-i18n-option="jizzakh">Джиззак</option>
+        <option data-i18n-option="gulistan">Гулистан</option>
+        <option data-i18n-option="urgench">Ургенч</option>
+      </select>
+
+
+
+      <label data-i18n="commentLabel">Комментарий:</label>
+      <textarea id="comment" rows="4" placeholder="Дополнительная информация..." readonly
+        onfocus="this.removeAttribute('readonly')"></textarea>
+
+      <button type="submit" data-i18n="submit">Отправить заявку</button>
+    </form>
+  </div>
+
+
+
+
+
+
+
+  <script>
+    document.getElementById('orderForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const phone = document.getElementById('phone').value;
+      const city = document.getElementById('city').value;
+      const comment = document.getElementById('comment').value;
+
+      const conditioners = [];
+      document.querySelectorAll('.cond-row').forEach(row => {
+        const type = row.querySelector('select[name="type"]').value;
+        const quantity = row.querySelector('input[name="quantity"]').value;
+        conditioners.push(`${type} – ${quantity} шт`);
+      });
+
+      const message = `
+    <b> Новый заказ кондиционеров </b>\n
+  Телефон: <b>${phone}</b>
+  Город: <b>${city}</b>
+  Комментарий: <b>${comment}</b>
+  Кондиционеры:\n${conditioners.map(c => '• ' + c).join('\n')}
+      `;
+
+      const chatId = '-1002321104734'; // <- вставь сюда
+      const token = '8001771557:AAH27gALZJTxmDlufLB2_N_fME4cWAl0nvg'; // <- и сюда
+
+      fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message,
+          parse_mode: 'HTML'
+        })
+      }).then(res => {
+        if (res.ok) {
+          alert('Заявка успешно отправлена!');
+        } else {
+          alert('Ошибка при отправке. Попробуйте позже.');
+        }
+      }).catch(err => {
+        alert('Сетевая ошибка. Проверьте соединение.');
+        console.error(err);
+      });
+    });
+  </script>
+
+
+  <script src="script.js"></script>
+</body>
+
+</html>
